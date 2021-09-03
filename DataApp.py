@@ -57,6 +57,7 @@ def Xuat_Kho(df):
     df['Lab'] = df['Lab'].astype(int)
     df['MicroLab'] = df['MicroLab'].astype(int)
     df['VA-ward'] = df['VA-ward'].astype(int)
+    df['InkTotal'] = df['InkTotal'].astype(int)
 
     with st.form("my_form"):
         department = st.selectbox("Department", ('Admin', 'Account', 'CTU', 'EI', 'Estate', 'Modelling', 'PE', 'Malaria', 'CNS', 'Dengue', 'Lab', 'Microlab', 'VA-ward'))
@@ -69,6 +70,7 @@ def Xuat_Kho(df):
             if inventory > 0:
                 df.loc[inkcode, 'Inventory'] = inventory - x_quantity
                 df.loc[inkcode, department] = df.loc[inkcode, department] + int(x_quantity)
+                st.write(f"Xuat kho {x_quantity} {inkcode} cho phong {department}")
             else:
                 st.error("Het muc")
 
@@ -88,9 +90,11 @@ def Nhap_Kho(df):
         submitted = st.form_submit_button("Submit")
         if submitted:
             inventory = df.loc[inkcode, 'Inventory']
+            total = df.loc[inkcode, 'InkTotal']
             df.loc[inkcode, 'Inventory'] = inventory + n_quantity
+            df.loc[inkcode, 'InkTotal'] = total + n_quantity
 
-            st.write(f"Update Inventory: {inkcode} , SL: {df.loc[inkcode, 'Inventory']}")
+            st.write(f"Successfully Updated Inventory: {inkcode} , Totlal: {df.loc[inkcode, 'Inventory']}")
 
         st.write(df[['Printer','InkCode','Inventory','IT-Warehouse']])
 
@@ -108,10 +112,17 @@ def Thong_Ke(df):
             quantity = df.loc[inv, 'Inventory']
             if quantity == 0:
                 st.write(f"{inv} out of Stock")
+
     elif tk == 'Usage by Department':
         st.write("Usage by Department")
+        data = df[['Admin','Account','CTU','EI','Modelling','PE','Malaria','CNS','Dengue','Lab','MicroLab','VA-ward']]
+        st.bar_chart(data)
     else:
         st.write("Max of Ink Cartridge")
+        tdata = df[['Printer','InkCode','InkTotal']]
+        st.write(tdata)
+
+        st.bar_chart(tdata['InkTotal'])
 
 def main():
     st.title("INK MANAGEMENT")
