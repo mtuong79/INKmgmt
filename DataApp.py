@@ -107,7 +107,7 @@ def Thong_Ke(df):
         for inv in df['InkCode']:
             quantity = df.loc[inv, 'Inventory']
             if quantity == 0:
-                st.write(f"Ink {inv} out of Stock")
+                st.write(f"{inv} out of Stock")
     elif tk == 'Usage by Department':
         st.write("Usage by Department")
     else:
