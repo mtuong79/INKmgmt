@@ -1,9 +1,4 @@
-# https://towardsdatascience.com/data-apps-with-pythons-streamlit-b14aaca7d083
-# https://towardsdatascience.com/how-to-read-csv-file-using-pandas-ab1f5e7e7b58
-# https://towardsdatascience.com/how-to-use-loc-and-iloc-for-selecting-data-in-pandas-bd09cb4c3d79
-# https://towardsdatascience.com/how-to-change-column-type-in-pandas-dataframes-d2a5548888f8
-# https://realpython.com/convert-python-string-to-int/
-# https://towardsdatascience.com/data-visualization-using-streamlit-151f4c85c79a
+# @M.Tuong - OUCRU
 
 import streamlit as st
 import pandas as pd
@@ -41,7 +36,7 @@ def get_df(file):
 
 def Xuat_Kho(df):
     file = "Data/InkMgmt.csv"
-    st.write("Xuat Kho")
+    st.subheader("STOCK EXPORT")
     #st.write(df)
     #st.dataframe(df.style.highlight_min(axis=0))
     df['Inventory'] = df['Inventory'].astype(int)
@@ -56,13 +51,14 @@ def Xuat_Kho(df):
     df['Dengue'] = df['Dengue'].astype(int)
     df['Lab'] = df['Lab'].astype(int)
     df['MicroLab'] = df['MicroLab'].astype(int)
+    df['Zoonoses'] = df['Zoonoses'].astype(int)
     df['VA-ward'] = df['VA-ward'].astype(int)
     df['InkTotal'] = df['InkTotal'].astype(int)
 
     with st.form("my_form"):
-        department = st.selectbox("Department", ('Admin', 'Account', 'CTU', 'EI', 'Estate', 'Modelling', 'PE', 'Malaria', 'CNS', 'Dengue', 'Lab', 'Microlab', 'VA-ward'))
+        department = st.selectbox("Department", ('Admin', 'Account', 'CTU', 'EI', 'Estate', 'Modelling', 'PE', 'Malaria', 'CNS', 'Dengue', 'Lab', 'Microlab', 'Zoonoses', 'VA-ward'))
         inkcode = st.selectbox("Ink Code",df['InkCode'])
-        x_quantity = st.number_input(f"Nhap so luong", value=0)
+        x_quantity = st.number_input(f"Exporting Quantity", value=0)
 
         submitted = st.form_submit_button("Submit")
         if submitted:
@@ -70,7 +66,8 @@ def Xuat_Kho(df):
             if inventory > 0:
                 df.loc[inkcode, 'Inventory'] = inventory - x_quantity
                 df.loc[inkcode, department] = df.loc[inkcode, department] + int(x_quantity)
-                st.write(f"Xuat kho {x_quantity} {inkcode} cho phong {department}")
+                #st.write(f"Xuat kho {x_quantity} {inkcode} cho phong {department}")
+                st.success(f"Successfully Exported:  {x_quantity} {inkcode} for {department}")
             else:
                 st.error("Het muc")
 
@@ -80,13 +77,13 @@ def Xuat_Kho(df):
 
 def Nhap_Kho(df):
     file = "Data/InkMgmt.csv"
-    #st.write("Nhap Kho")
+    st.subheader("STOCK IMPORT")
     #st.dataframe(df[['Printer','InkCode','Inventory','IT-Warehouse']])
     df['Inventory'] = df['Inventory'].astype(int)
 
     with st.form("my_form"):
         inkcode = st.selectbox("Ink Code",df['InkCode'])
-        n_quantity = st.number_input("Nhap so luong", value=0)
+        n_quantity = st.number_input("Importing Quantity", value=0)
         submitted = st.form_submit_button("Submit")
         if submitted:
             inventory = df.loc[inkcode, 'Inventory']
@@ -94,35 +91,40 @@ def Nhap_Kho(df):
             df.loc[inkcode, 'Inventory'] = inventory + n_quantity
             df.loc[inkcode, 'InkTotal'] = total + n_quantity
 
-            st.write(f"Successfully Updated Inventory: {inkcode} , Totlal: {df.loc[inkcode, 'Inventory']}")
+            #st.write(f"Successfully Updated Inventory: {inkcode} , Totlal: {df.loc[inkcode, 'Inventory']}")
+            st.success(f"Successfully Imported: {inkcode} , Total: {df.loc[inkcode, 'Inventory']}")
 
         st.write(df[['Printer','InkCode','Inventory','IT-Warehouse']])
 
     df.to_csv(file, index=True)
 
 def Thong_Ke(df):
-    st.title("Report")
-    tk = st.radio("",('Out of Stock', 'Usage by Department', 'Max of Ink Cartridge'))
+    st.subheader("STOCK REPORT")
+    tk = st.radio("",('Inventory Summary', 'Usage by Department', 'Total of Ink Cartridges'))
 
-    if tk == 'Out of Stock':
+    if tk == 'Inventory Summary':
         st.bar_chart(df['Inventory'])
-        st.subheader("INK Out of Stock")
+        st.subheader("Out of Stock")
 
         for inv in df['InkCode']:
             quantity = df.loc[inv, 'Inventory']
             if quantity == 0:
-                st.write(f"{inv} out of Stock")
+                st.write(f"{inv}: out of stock")
 
     elif tk == 'Usage by Department':
         st.write("Usage by Department")
-        data = df[['Admin','Account','CTU','EI','Modelling','PE','Malaria','CNS','Dengue','Lab','MicroLab','VA-ward']]
+        data = df[['Admin','Account','CTU','EI','Modelling','PE','Malaria','CNS','Dengue','Lab','MicroLab','Zoonoses','VA-ward']]
         st.bar_chart(data)
     else:
-        st.write("Max of Ink Cartridge")
+        st.write("Total of Ink Cartridges")
         tdata = df[['Printer','InkCode','InkTotal']]
-        st.write(tdata)
+        idmin = df['InkTotal'].idxmin()
+        idmax = df['InkTotal'].idxmax()
 
         st.bar_chart(tdata['InkTotal'])
+        st.write(tdata)
+        st.write(f"Max of Ink {idmax} is {df.loc[idmax, 'InkTotal']}")
+        st.write(f"Min of Ink {idmin} is {df.loc[idmin, 'InkTotal']}")
 
 def main():
     st.title("INK MANAGEMENT")
@@ -134,10 +136,10 @@ def main():
     df = pd.read_csv(file,
                      index_col=['CodeIndex'])
 
-    task = st.sidebar.radio('Task', ['Xuat Kho', 'Nhap Kho', 'Thong Ke'], 0)
-    if task == 'Xuat Kho':
+    task = st.sidebar.radio('TASK', ['Stock Export', 'Stock Import', 'Stock Report'], 0)
+    if task == 'Stock Export':
         Xuat_Kho(df)
-    elif task == 'Nhap Kho':
+    elif task == 'Stock Import':
        Nhap_Kho(df)
     else:
         Thong_Ke(df)
