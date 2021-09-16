@@ -1,8 +1,10 @@
-# @M.Tuong - OUCRU
+# M.Tuong@OUCRU
 
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+from datetime import date
+import base64
 
 def explore(df):
     # DATA
@@ -100,7 +102,7 @@ def Nhap_Kho(df):
 
 def Thong_Ke(df):
     st.subheader("STOCK REPORT")
-    tk = st.radio("",('Inventory Summary', 'Usage by Department', 'Total of Ink Cartridges'))
+    tk = st.radio("",('Inventory Summary', 'Usage by Department', 'Total of Ink Cartridges','Order of Ink'))
 
     if tk == 'Inventory Summary':
         st.bar_chart(df['Inventory'])
@@ -109,22 +111,56 @@ def Thong_Ke(df):
         for inv in df['InkCode']:
             quantity = df.loc[inv, 'Inventory']
             if quantity == 0:
-                st.write(f"{inv}: out of stock")
+                st.write(f"**{inv}**: _out of stock_")
 
     elif tk == 'Usage by Department':
         st.write("Usage by Department")
         data = df[['Admin','Account','CTU','EI','Modelling','PE','Malaria','CNS','Dengue','Lab','MicroLab','Zoonoses','VA-ward']]
         st.bar_chart(data)
-    else:
-        st.write("Total of Ink Cartridges")
+    elif tk == 'Total of Ink Cartridges':
+        st.subheader("Total of Ink Cartridges")
         tdata = df[['Printer','InkCode','InkTotal']]
         idmin = df['InkTotal'].idxmin()
         idmax = df['InkTotal'].idxmax()
 
-        st.bar_chart(tdata['InkTotal'])
-        st.write(tdata)
         st.write(f"Max of Ink {idmax} is {df.loc[idmax, 'InkTotal']}")
         st.write(f"Min of Ink {idmin} is {df.loc[idmin, 'InkTotal']}")
+        st.bar_chart(tdata['InkTotal'])
+        st.write(tdata)
+
+        csv = df.to_csv(index=False)
+        b64 = base64.b64encode(csv.encode()).decode()  # some strings
+        href = f'<a href="data:file/csv;base64,{b64}" download="Data/InkMgmt.csv" target="_blank">Download csv file</a>'
+        st.markdown(href, unsafe_allow_html=True)
+
+    else:
+        file = "Data/InkMgmt.csv"
+        df['OrderQuantity'] = df['OrderQuantity'].astype(int)
+        df['OrderDate'] = pd.to_datetime(df['OrderDate']) # format='%y%m%d'
+        today = date.today()
+        order_date = st.date_input('Order date', today)
+
+        with st.form("order_form"):
+            st.write("Select the Ink-Code to order")
+
+            inkcode = df["InkCode"]
+
+            sl_order = st.selectbox("Select the Ink-Code to order", inkcode)
+            q_order = st.number_input("Order Quantity", value=0)
+
+            order_submitted = st.form_submit_button("Order")
+
+            if order_submitted:
+                df.loc[sl_order,'OrderQuantity'] = q_order
+                df.loc[sl_order,'OrderDate'] = today
+                st.success(f"Successfully put the inkcode: {sl_order} and quantity: {q_order} into the order list ")
+                df.to_csv(file, index=True)
+
+        st.write(f"This is your order of Ink, date: {order_date}")
+        #st.dataframe(df[['InkCode','OrderQuantity']])
+        for inkcode in df['InkCode']:
+            if df.loc[inkcode,'OrderDate'] == today:
+                st.write(f"{inkcode} : {df.loc[inkcode,'OrderQuantity']}")
 
 def main():
     st.title("INK MANAGEMENT")
