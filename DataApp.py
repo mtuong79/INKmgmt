@@ -60,7 +60,7 @@ def Xuat_Kho(df):
     with st.form("my_form"):
         department = st.selectbox("Department", ('Admin', 'Account', 'CTU', 'EI', 'Estate', 'Modelling', 'PE', 'Malaria', 'CNS', 'Dengue', 'Lab', 'Microlab', 'Zoonoses', 'VA-ward'))
         inkcode = st.selectbox("Ink Code",df['InkCode'])
-        x_quantity = st.number_input(f"Exporting Quantity", value=0)
+        x_quantity = st.number_input(f"Quantity", value=0)
 
         submitted = st.form_submit_button("Submit")
         if submitted:
@@ -85,7 +85,7 @@ def Nhap_Kho(df):
 
     with st.form("my_form"):
         inkcode = st.selectbox("Ink Code",df['InkCode'])
-        n_quantity = st.number_input("Importing Quantity", value=0)
+        n_quantity = st.number_input("Quantity", value=0)
         submitted = st.form_submit_button("Submit")
         if submitted:
             inventory = df.loc[inkcode, 'Inventory']
