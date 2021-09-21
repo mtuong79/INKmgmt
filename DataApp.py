@@ -1,10 +1,4 @@
-# https://towardsdatascience.com/data-apps-with-pythons-streamlit-b14aaca7d083
-# https://towardsdatascience.com/how-to-read-csv-file-using-pandas-ab1f5e7e7b58
-# https://towardsdatascience.com/how-to-use-loc-and-iloc-for-selecting-data-in-pandas-bd09cb4c3d79
-# https://towardsdatascience.com/how-to-change-column-type-in-pandas-dataframes-d2a5548888f8
-# https://realpython.com/convert-python-string-to-int/
-# https://towardsdatascience.com/data-visualization-using-streamlit-151f4c85c79a
-# https://docs.python.org/3/library/email.examples.html
+# MT@OUCRU
 
 import streamlit as st
 import pandas as pd
