@@ -66,22 +66,21 @@ def Xuat_Kho(df):
     df['InkTotal'] = df['InkTotal'].astype(int)
 
     with st.form("my_form"):
-        department = st.selectbox("Department", ('Admin', 'Account', 'CTU', 'EI', 'Estate', 'Modelling', 'PE', 'Malaria', 'CNS', 'Dengue', 'Lab', 'Microlab', 'Zoonoses', 'VA-ward'))
+        department = st.selectbox("Department", ('Admin', 'Account', 'CTU', 'EI','IT', 'Estate', 'Modelling', 'PE', 'Malaria', 'CNS', 'Dengue', 'Lab', 'Microlab', 'Zoonoses', 'VA-ward'))
         inkcode = st.selectbox("Ink Code",df['InkCode'])
-        x_quantity = st.number_input(f"Quantity", value=0)
+        #x_quantity = st.number_input(f"Quantity", value=0)
 
         submitted = st.form_submit_button("Submit")
         if submitted:
             Thang =  date.today().strftime("%b")
-            #Thang = str(Thang)
+
             inventory = df.loc[inkcode, 'Inventory']
-            check_sum = inventory - x_quantity
-            if inventory > 0 and check_sum >= 0:
-                df.loc[inkcode, 'Inventory'] = inventory - x_quantity
-                df.loc[inkcode, department] = df.loc[inkcode, department] + int(x_quantity)
-                #st.write(f"Xuat kho {x_quantity} {inkcode} cho phong {department}")
+
+            if inventory > 0:
+                df.loc[inkcode, 'Inventory'] = inventory - 1
+                df.loc[inkcode, department] += 1
                 df.loc[inkcode, Thang] += 1
-                st.success(f"Successfully Exported:  {x_quantity} {inkcode} for {department}")
+                st.success(f"Successfully Exported: {inkcode} for {department}")
             else:
                 st.error("Out of Stock")
 
@@ -106,7 +105,7 @@ def Nhap_Kho(df):
             df.loc[inkcode, 'InkTotal'] = total + n_quantity
 
             #st.write(f"Successfully Updated Inventory: {inkcode} , Totlal: {df.loc[inkcode, 'Inventory']}")
-            st.success(f"Successfully Imported: {inkcode} , Total: {df.loc[inkcode, 'Inventory']}")
+            st.success(f"Successfully Imported: {inkcode} , Total in Stock: {df.loc[inkcode, 'Inventory']}")
 
         st.write(df[['Printer','InkCode','Inventory','IT-Warehouse']])
 
@@ -139,7 +138,7 @@ def Thong_Ke(df):
 
     elif tk == 'Usage by Department':
         st.write("Usage by Department")
-        data = df[['Admin','Account','CTU','EI','Modelling','PE','Malaria','CNS','Dengue','Lab','MicroLab','Zoonoses','VA-ward']]
+        data = df[['Admin','Account','CTU','EI','IT','Modelling','PE','Malaria','CNS','Dengue','Lab','MicroLab','Zoonoses','VA-ward']]
         st.bar_chart(data)
     elif tk == 'Total of Ink Cartridges':
         st.subheader("Total of Ink Cartridges")
