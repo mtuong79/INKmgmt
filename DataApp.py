@@ -66,7 +66,7 @@ def Xuat_Kho(df):
     df['InkTotal'] = df['InkTotal'].astype(int)
 
     with st.form("my_form"):
-        department = st.selectbox("Department", ('Admin', 'Account', 'CTU', 'EI','IT', 'Estate', 'Modelling', 'PE', 'Malaria', 'CNS', 'Dengue', 'Lab', 'Microlab', 'Zoonoses', 'VA-ward'))
+        department = st.selectbox("Department", ('Admin', 'Account', 'CTU', 'EI','IT', 'Estate', 'Modelling', 'PE', 'Malaria', 'CNS', 'Dengue', 'Lab', 'MicroLab', 'Zoonoses', 'VA-ward'))
         inkcode = st.selectbox("Ink Code",df['InkCode'])
         #x_quantity = st.number_input(f"Quantity", value=0)
 
