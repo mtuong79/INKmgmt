@@ -59,6 +59,7 @@ def Xuat_Kho(df):
     df['Malaria'] = df['Malaria'].astype(int)
     df['CNS'] = df['CNS'].astype(int)
     df['Dengue'] = df['Dengue'].astype(int)
+    df['TB'] = df['TB'].astype(int)
     df['Lab'] = df['Lab'].astype(int)
     df['MicroLab'] = df['MicroLab'].astype(int)
     df['Zoonoses'] = df['Zoonoses'].astype(int)
@@ -138,7 +139,7 @@ def Thong_Ke(df):
 
     elif tk == 'Usage by Department':
         st.write("Usage by Department")
-        data = df[['Admin','Account','CTU','EI','IT','Modelling','PE','Malaria','CNS','Dengue','Lab','MicroLab','Zoonoses','VA-ward']]
+        data = df[['Admin','Account','CTU','EI','IT','Modelling','PE','Malaria','CNS','Dengue','TB','Lab','MicroLab','Zoonoses','VA-ward']]
         st.bar_chart(data)
     elif tk == 'Total of Ink Cartridges':
         st.subheader("Total of Ink Cartridges")
