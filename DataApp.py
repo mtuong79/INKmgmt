@@ -54,6 +54,9 @@ def Xuat_Kho(df):
     df['Account'] = df['Account'].astype(int)
     df['CTU'] = df['CTU'].astype(int)
     df['EI'] = df['EI'].astype(int)
+    df['IT'] = df['IT'].astype(int)
+    df['Estate'] = df['Estate'].astype(int)
+    df['MolEPI'] = df['MolEPI'].astype(int)
     df['Modelling'] = df['Modelling'].astype(int)
     df['PE'] = df['PE'].astype(int)
     df['Malaria'] = df['Malaria'].astype(int)
@@ -67,7 +70,7 @@ def Xuat_Kho(df):
     df['InkTotal'] = df['InkTotal'].astype(int)
 
     with st.form("my_form"):
-        department = st.selectbox("Department", ('Admin', 'Account', 'CTU', 'EI','IT', 'Estate', 'Modelling', 'PE', 'Malaria', 'CNS', 'Dengue', 'TB', 'Lab', 'MicroLab', 'Zoonoses', 'VA-ward'))
+        department = st.selectbox("Department", ('Admin', 'Account', 'CTU', 'EI','IT', 'Estate' ,'MolEPI', 'Modelling', 'PE', 'Malaria', 'CNS', 'Dengue', 'TB', 'Lab', 'MicroLab', 'Zoonoses', 'VA-ward'))
         inkcode = st.selectbox("Ink Code",df['InkCode'])
         #x_quantity = st.number_input(f"Quantity", value=0)
 
@@ -139,7 +142,7 @@ def Thong_Ke(df):
 
     elif tk == 'Usage by Department':
         st.write("Usage by Department")
-        data = df[['Admin','Account','CTU','EI','IT','Modelling','PE','Malaria','CNS','Dengue','TB','Lab','MicroLab','Zoonoses','VA-ward']]
+        data = df[['Admin','Account','CTU','EI','IT','Estate','MolEPI', 'Modelling','PE','Malaria','CNS','Dengue','TB','Lab','MicroLab','Zoonoses','VA-ward']]
         st.bar_chart(data)
     elif tk == 'Total of Ink Cartridges':
         st.subheader("Total of Ink Cartridges")
